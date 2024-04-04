@@ -29,6 +29,7 @@ function createTaskCard(task) {
     button.attr('class', 'btn btn-danger delete');
     button.text('Delete');
     button.attr('data-project-id', task.id);
+    button.on('click', handleDeleteTask);
 
 
     if (task.taskDueDate && task.status !== 'done') {
@@ -108,7 +109,14 @@ function handleAddTask(event){
 
 // Todo: create a function to handle deleting a task
 function handleDeleteTask(event){
-
+    const projectId = $(this).attr('data-project-id');
+    const taskList = JSON.parse(localStorage.getItem("tasks"));
+    
+    taskList.forEach((task) => {
+        if (task.id === projectId) {
+            taskList.splice(taskList.indexOf(task), 1);
+        }
+    })
 }
 
 // Todo: create a function to handle dropping a task into a new status lane
@@ -129,11 +137,14 @@ function handleDrop(event, ui) {
     renderTaskList();
 }
 
+
 // Todo: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
 $(document).ready(function () {
     form.on('click', handleAddTask);
 
     renderTaskList();
+
+
 
     $('.lane').droppable({
         accept: '.draggable',
